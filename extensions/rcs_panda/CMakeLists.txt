@@ -48,12 +48,6 @@ find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
 find_package(pinocchio REQUIRED)
 find_package(rcs REQUIRED)
 
-FetchContent_Declare(rl
-    GIT_REPOSITORY https://github.com/roboticslibrary/rl.git
-    GIT_TAG 0b3797215345a1d37903634095361233d190b2e6
-    GIT_PROGRESS TRUE
-    EXCLUDE_FROM_ALL
-)
 FetchContent_Declare(
     libfranka
     GIT_REPOSITORY https://github.com/frankaemika/libfranka.git
