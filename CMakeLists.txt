@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.19)
 project(
     rcs
     LANGUAGES C CXX
-    VERSION 0.5.0
+    VERSION 0.5.1
     DESCRIPTION "Robot Control Stack Library"
 )
 

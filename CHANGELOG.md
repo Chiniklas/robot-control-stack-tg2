@@ -1,3 +1,9 @@
+## v0.5.1 (2025-09-29)
+
+### Fix
+
+- **extensions**: rcs versions
+
 ## v0.5.0 (2025-09-26)
 
 ### Feat
