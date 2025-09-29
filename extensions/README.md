@@ -5,3 +5,4 @@ To install hardware exentsion use
 pip install -ve <extension> # e.g. rcs_fr3
 ```
 Some extensions need further dependencies or further setups. Please to check out their readme pages for details.
+When installing the SO101 extension, make sure to check its `README_IMPORTANT.md` for dealing with dependency conflict.
