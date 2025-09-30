@@ -309,12 +309,20 @@ class RandomObjectPos(SimWrapper):
         init_object_pose: rcs.common.Pose,
         include_position: bool = True,
         include_rotation: bool = False,
+        x_scale: float = 0.2,
+        y_scale: float = 0.2,
+        x_offset: float = 0.1,
+        y_offset: float = 0.1,
     ):
         super().__init__(env, simulation)
         self.joint_name = joint_name
         self.init_object_pose = init_object_pose
         self.include_position = include_position
         self.include_rotation = include_rotation
+        self.x_scale = x_scale
+        self.y_scale = y_scale
+        self.x_offset = x_offset
+        self.y_offset = y_offset
 
     def reset(
         self, seed: int | None = None, options: dict[str, Any] | None = None
@@ -332,22 +340,23 @@ class RandomObjectPos(SimWrapper):
 
         pos_z = self.init_object_pose.translation()[2]
         if self.include_position:
-            pos_x = self.init_object_pose.translation()[0] + np.random.random() * 0.2 - 0.1
-            pos_y = self.init_object_pose.translation()[1] + np.random.random() * 0.2 - 0.1
+            pos_x = self.init_object_pose.translation()[0] + np.random.random() * self.x_scale + self.x_offset
+            pos_y = self.init_object_pose.translation()[1] + np.random.random() * self.y_scale + self.y_offset
         else:
             pos_x = self.init_object_pose.translation()[0]
             pos_y = self.init_object_pose.translation()[1]
 
         quat = self.init_object_pose.rotation_q()  # xyzw format
         if self.include_rotation:
+            random_z_rotation = (np.random.random() - 0.5) * (0.7071068 * 2)
             self.sim.data.joint(self.joint_name).qpos = [
                 pos_x,
                 pos_y,
                 pos_z,
-                2 * np.random.random() - quat[3],
+                quat[3] + random_z_rotation,
                 quat[0],
                 quat[1],
-                quat[2],
+                quat[2] + random_z_rotation,
             ]
         else:
             self.sim.data.joint(self.joint_name).qpos = [pos_x, pos_y, pos_z, quat[3], quat[0], quat[1], quat[2]]
@@ -358,9 +367,10 @@ class RandomObjectPos(SimWrapper):
 class RandomCubePos(SimWrapper):
     """Wrapper to randomly place cube in the lab environments."""
 
-    def __init__(self, env: gym.Env, simulation: sim.Sim, include_rotation: bool = True):
+    def __init__(self, env: gym.Env, simulation: sim.Sim, include_rotation: bool = False, cube_joint_name="box_joint"):
         super().__init__(env, simulation)
         self.include_rotation = include_rotation
+        self.cube_joint_name = cube_joint_name
 
     def reset(
         self, seed: int | None = None, options: dict[str, Any] | None = None
@@ -376,9 +386,9 @@ class RandomCubePos(SimWrapper):
         pos_y = iso_cube[1] + np.random.random() * 0.2 - 0.1
 
         if self.include_rotation:
-            self.sim.data.joint("box_joint").qpos = [pos_x, pos_y, pos_z, 2 * np.random.random() - 1, 0, 0, 1]
+            self.sim.data.joint(self.cube_joint_name).qpos = [pos_x, pos_y, pos_z, 2 * np.random.random() - 1, 0, 0, 1]
         else:
-            self.sim.data.joint("box_joint").qpos = [pos_x, pos_y, pos_z, 0, 0, 0, 1]
+            self.sim.data.joint(self.cube_joint_name).qpos = [pos_x, pos_y, pos_z, 0, 0, 0, 1]
 
         return obs, info
 
@@ -388,17 +398,18 @@ class PickCubeSuccessWrapper(gym.Wrapper):
 
     EE_HOME = np.array([0.34169773, 0.00047028, 0.4309004])
 
-    def __init__(self, env):
+    def __init__(self, env, cube_joint_name="box_joint"):
         super().__init__(env)
         self.unwrapped: RobotEnv
         assert isinstance(self.unwrapped.robot, sim.SimRobot), "Robot must be a sim.SimRobot instance."
         self.sim = env.get_wrapper_attr("sim")
+        self.cube_joint_name = cube_joint_name
 
     def step(self, action: dict[str, Any]):
         obs, reward, _, truncated, info = super().step(action)
 
         success = (
-            self.sim.data.joint("box_joint").qpos[2] > 0.15 + 0.852
+            self.sim.data.joint(self.cube_joint_name).qpos[2] > 0.15 + 0.852
             and obs["gripper"] == GripperWrapper.BINARY_GRIPPER_CLOSED
         )
         info["success"] = success
@@ -406,9 +417,10 @@ class PickCubeSuccessWrapper(gym.Wrapper):
             reward = 5
         else:
             tcp_to_obj_dist = np.linalg.norm(
-                self.sim.data.joint("box_joint").qpos[:3] - self.unwrapped.robot.get_cartesian_position().translation()
+                self.sim.data.joint(self.cube_joint_name).qpos[:3]
+                - self.unwrapped.robot.get_cartesian_position().translation()
             )
-            obj_to_goal_dist = np.linalg.norm(self.sim.data.joint("box_joint").qpos[:3] - self.EE_HOME)
+            obj_to_goal_dist = np.linalg.norm(self.sim.data.joint(self.cube_joint_name).qpos[:3] - self.EE_HOME)
 
             # old reward
             # reward = -obj_to_goal_dist - tcp_to_obj_dist
