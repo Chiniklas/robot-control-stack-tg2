@@ -1,3 +1,9 @@
+## v0.5.2 (2025-10-09)
+
+### Feat
+
+- added example for ompl and cleaned up ompl code
+
 ## v0.5.1 (2025-09-29)
 
 ### Fix
