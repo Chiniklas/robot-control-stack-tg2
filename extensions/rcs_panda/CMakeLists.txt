@@ -48,12 +48,6 @@ find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
 find_package(pinocchio REQUIRED)
 find_package(rcs REQUIRED)
 
-FetchContent_Declare(rl
-    GIT_REPOSITORY https://github.com/roboticslibrary/rl.git
-    GIT_TAG 0b3797215345a1d37903634095361233d190b2e6
-    GIT_PROGRESS TRUE
-    EXCLUDE_FROM_ALL
-)
 FetchContent_Declare(
     libfranka
     GIT_REPOSITORY https://github.com/frankaemika/libfranka.git
@@ -68,6 +62,7 @@ FetchContent_Declare(pybind11
     EXCLUDE_FROM_ALL
 )
 
-FetchContent_MakeAvailable(rl libfranka pybind11)
+FetchContent_MakeAvailable(libfranka pybind11)
+set_target_properties(franka PROPERTIES CXX_STANDARD 20)
 
 add_subdirectory(src_fr3)
