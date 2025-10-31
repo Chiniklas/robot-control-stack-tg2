@@ -5,7 +5,7 @@
 #include <optional>
 #include <string>
 
-#include "IK.h"
+#include "Kinematics.h"
 #include "Pose.h"
 #include "utils.h"
 
@@ -96,18 +96,23 @@ static const std::unordered_map<RobotType, RobotMetaConfig> robots_meta_config =
       {SO101,
        RobotMetaConfig{
            // q_home (5‐vector):
-           (VectorXd(5) << -9.40612320177057, -99.66130397967824,
-            99.9124726477024, 69.96996996996998, -9.095744680851055)
+          //  (VectorXd(5) << -9.40612320177057, -99.66130397967824,
+          //   99.9124726477024, 69.96996996996998, -9.095744680851055)
+          //      .finished(),
+                     (VectorXd(5) << -0.01914898, -1.90521916, 1.56476701, 1.04783839, -1.40323926)
                .finished(),
            // dof:
            5,
            // joint_limits (2×5):
            (Eigen::Matrix<double, 2, Eigen::Dynamic, Eigen::ColMajor>(2, 5) <<
-                // low 5‐tuple
-                -100.0,
-            -100.0, -100.0, -100.0, -100.0,
+            // low 5‐tuple
+                -1.9198621771937616,
+            -1.9198621771937634, -1.7453292519943295, -1.6580627969561903,
+            -2.7925268969992407,
+
             // high 5‐tuple
-            100.0, 100.0, 100.0, 100.0, 100.0)
+            1.9198621771937616, 1.9198621771937634, 1.5707963267948966,
+            1.6580627969561903, 2.7925268969992407)
                .finished()}}}};
 
 struct RobotConfig {
@@ -144,13 +149,13 @@ class Robot {
  public:
   virtual ~Robot(){};
 
-  // Also add an implementation specific set_parameters function that takes
+  // Also add an implementation specific set_config function that takes
   // a deduced config type
-  // This functino can also be used for signaling e.g. error recovery and the
+  // This function can also be used for signaling e.g. error recovery and the
   // like
-  // bool set_parameters(const RConfig& cfg);
+  // bool set_config(const RConfig& cfg);
 
-  virtual RobotConfig* get_parameters() = 0;
+  virtual RobotConfig* get_config() = 0;
 
   virtual RobotState* get_state() = 0;
 
@@ -168,7 +173,7 @@ class Robot {
 
   virtual void set_cartesian_position(const Pose& pose) = 0;
 
-  virtual std::optional<std::shared_ptr<IK>> get_ik() = 0;
+  virtual std::optional<std::shared_ptr<Kinematics>> get_ik() = 0;
 
   common::Pose to_pose_in_world_coordinates(
       const Pose& pose_in_robot_coordinates);
@@ -183,11 +188,11 @@ class Gripper {
  public:
   virtual ~Gripper(){};
 
-  // Also add an implementation specific set_parameters function that takes
+  // Also add an implementation specific set_config function that takes
   // a deduced config type
-  // bool set_parameters(const GConfig& cfg);
+  // bool set_config(const GConfig& cfg);
 
-  virtual GripperConfig* get_parameters() = 0;
+  virtual GripperConfig* get_config() = 0;
   virtual GripperState* get_state() = 0;
 
   // set width of the gripper, 0 is closed, 1 is open
@@ -216,11 +221,11 @@ class Hand {
  public:
   virtual ~Hand(){};
   // TODO: Add low-level control interface for the hand with internal state updates
-  // Also add an implementation specific set_parameters function that takes
+  // Also add an implementation specific set_config function that takes
   // a deduced config type
-  // bool set_parameters(const GConfig& cfg);
+  // bool set_config(const GConfig& cfg);
 
-  virtual HandConfig* get_parameters() = 0;
+  virtual HandConfig* get_config() = 0;
   virtual HandState* get_state() = 0;
 
   // set width of the hand, 0 is closed, 1 is open

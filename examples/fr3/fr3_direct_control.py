@@ -60,8 +60,11 @@ def main():
         gripper: rcs.common.Gripper
         if ROBOT_INSTANCE == RobotPlatform.SIMULATION:
             simulation = sim.Sim(rcs.scenes["fr3_empty_world"].mjb)
-            urdf_path = rcs.scenes["fr3_empty_world"].urdf
-            ik = rcs.common.RL(str(urdf_path))
+            mjcf_path = rcs.scenes["fr3_empty_world"].mjcf_robot
+            ik = rcs.common.Pin(
+                mjcf_path,
+                "attachment_site_0",
+            )
             cfg = sim.SimRobotConfig()
             cfg.add_id("0")
             cfg.tcp_offset = rcs.common.Pose(rcs.common.FrankaHandTCPOffset())
@@ -92,13 +95,16 @@ def main():
             simulation.open_gui()
 
         else:
-            urdf_path = rcs.scenes["fr3_empty_world"].urdf
-            ik = rcs.common.RL(str(urdf_path))
+            mjcf_path = rcs.scenes["fr3_empty_world"].mjcf_robot
+            ik = rcs.common.Pin(
+                mjcf_path,
+                "attachment_site_0",
+            )
             robot = hw.FR3(ROBOT_IP, ik)
             robot_cfg = hw.FR3Config()
             robot_cfg.tcp_offset = rcs.common.Pose(rcs.common.FrankaHandTCPOffset())
             robot_cfg.ik_solver = hw.IKSolver.rcs_ik
-            robot.set_parameters(robot_cfg)  # type: ignore
+            robot.set_config(robot_cfg)  # type: ignore
 
             gripper_cfg_hw = hw.FHConfig()
             gripper_cfg_hw.epsilon_inner = gripper_cfg_hw.epsilon_outer = 0.1

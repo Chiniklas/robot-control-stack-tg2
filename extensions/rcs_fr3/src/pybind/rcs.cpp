@@ -9,7 +9,7 @@
 
 #include <memory>
 
-#include "rcs/IK.h"
+#include "rcs/Kinematics.h"
 #include "rcs/Pose.h"
 #include "rcs/Robot.h"
 #include "rcs/utils.h"
@@ -99,10 +99,10 @@ PYBIND11_MODULE(_core, m) {
       (py::object)py::module_::import("rcs").attr("common").attr("Robot");
   py::class_<rcs::hw::FR3, std::shared_ptr<rcs::hw::FR3>>(hw, "FR3", robot)
       .def(py::init<const std::string &,
-                    std::optional<std::shared_ptr<rcs::common::IK>>>(),
+                    std::optional<std::shared_ptr<rcs::common::Kinematics>>>(),
            py::arg("ip"), py::arg("ik") = std::nullopt)
-      .def("set_parameters", &rcs::hw::FR3::set_parameters, py::arg("cfg"))
-      .def("get_parameters", &rcs::hw::FR3::get_parameters)
+      .def("set_config", &rcs::hw::FR3::set_config, py::arg("cfg"))
+      .def("get_config", &rcs::hw::FR3::get_config)
       .def("get_state", &rcs::hw::FR3::get_state)
       .def("set_default_robot_behavior",
            &rcs::hw::FR3::set_default_robot_behavior)
@@ -132,10 +132,9 @@ PYBIND11_MODULE(_core, m) {
       hw, "FrankaHand", gripper)
       .def(py::init<const std::string &, const rcs::hw::FHConfig &>(),
            py::arg("ip"), py::arg("cfg"))
-      .def("get_parameters", &rcs::hw::FrankaHand::get_parameters)
+      .def("get_config", &rcs::hw::FrankaHand::get_config)
       .def("get_state", &rcs::hw::FrankaHand::get_state)
-      .def("set_parameters", &rcs::hw::FrankaHand::set_parameters,
-           py::arg("cfg"))
+      .def("set_config", &rcs::hw::FrankaHand::set_config, py::arg("cfg"))
       .def("is_grasped", &rcs::hw::FrankaHand::is_grasped)
       .def("homing", &rcs::hw::FrankaHand::homing);
 

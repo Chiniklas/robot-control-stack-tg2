@@ -4,7 +4,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "rcs"
-version = "0.4.0"
+version = "0.5.2"
 description="Python Interface for libfranka to control the Franka Research 3 Robot"
 dependencies = ["websockets>=11.0",
     "requests~=2.31",
@@ -14,7 +14,7 @@ dependencies = ["websockets>=11.0",
     "absl-py~=2.1",
     "etils[epath]>=1.7.0",
     "glfw~=2.7",
-    "pyopengl",
+    "pyopengl==3.1.9",
     "pynput~=1.7.7",
     "pillow~=10.3",
     "python-dotenv==1.0.1",
@@ -37,12 +37,7 @@ authors = [
   { name = "Pierre Krack", email = "pierre.krack@utn.de" },
 ]
 requires-python = ">=3.10"
-license = {file = "LICENSE"}
-classifiers = [
-  "Development Status :: 3 - Alpha",
-  "License :: OSI Approved :: GNU Affero General Public License v3 (AGPLv3)",
-  "Programming Language :: Python :: 3",
-]
+license = "AGPL-3.0-or-later"
 
 # until https://github.com/pypa/pip/issues/11440 is resolved
 # we use requirements_dev.txt for linter and formatter dependencies
@@ -149,4 +144,16 @@ major_version_zero = true
 version_files = [
     "CMakeLists.txt:VERSION",
     "python/rcs/_core/__init__.pyi:__version__",
+
+    "extensions/rcs_fr3/CMakeLists.txt:VERSION",
+    "extensions/rcs_fr3/src/rcs_fr3/_core/__init__.pyi:__version__",
+    "extensions/rcs_fr3/pyproject.toml:version",
+
+    "extensions/rcs_robotics_library/CMakeLists.txt:VERSION",
+    "extensions/rcs_robotics_library/src/rcs_robotics_library/_core/__init__.pyi:__version__",
+    "extensions/rcs_robotics_library/pyproject.toml:version",
+
+    "extensions/rcs_realsense/pyproject.toml:version",
+    "extensions/rcs_so101/pyproject.toml:version",
+    "extensions/rcs_xarm7/pyproject.toml:version",
 ]

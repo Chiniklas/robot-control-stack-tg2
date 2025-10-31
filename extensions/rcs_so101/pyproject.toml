@@ -4,11 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "rcs_so101"
-version = "0.4.0"
+version = "0.5.2"
 description="RCS SO101 module"
 dependencies = [
-    "rcs==0.4.0",
-    "lerobot @ git+https://github.com/huggingface/lerobot.git",
+    "rcs>=0.5.0",
+    "lerobot==0.3.3",
 ]
 readme = "README.md"
 maintainers = [
@@ -19,9 +19,4 @@ authors = [
   { name = "Pierre Krack", email = "pierre.krack@utn.de" },
 ]
 requires-python = ">=3.10"
-classifiers = [
-  "Development Status :: 3 - Alpha",
-  "License :: OSI Approved :: GNU Affero General Public License v3 (AGPLv3)",
-  "Programming Language :: Python :: 3",
-]
-
+license = "AGPL-3.0-or-later"

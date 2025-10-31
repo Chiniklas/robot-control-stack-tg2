@@ -62,6 +62,7 @@ class MjORobot:
         robot_name: str,
         env: RobotEnv,
         njoints: int = 7,
+        robot_tcp: Pose | None = None,
         robot_xml_name: str = "",
         robot_root_name: str = "base_0",
         robot_joint_name: str = "fr3_joint#_0",
@@ -99,6 +100,7 @@ class MjORobot:
         ), f"Robot XML file {robot_xml_name} does not exist. Please provide a valid path."
 
         self.robot_name = robot_name
+        self.tcp_offset = robot_tcp if robot_tcp is not None else self.franka_hand_tcp
         self.env = env
         self.model = self.env.get_wrapper_attr("sim").model
         self.data = self.env.get_wrapper_attr("sim").data
@@ -268,7 +270,7 @@ class MjORobot:
         # Deepcopy might not be necessary
         return [deepcopy(self.data.qpos[joint_id]) for joint_id in self.joint_ids]
 
-    def ik(self, pose, q0=None, tcp_offset=None):
+    def ik(self, pose, q0=None):
         """
         Perform inverse kinematics to find joint positions that achieve the desired pose.
 
@@ -280,8 +282,7 @@ class MjORobot:
         Returns:
             numpy.ndarray: Joint positions that achieve the desired pose, or None if no solution is found.
         """
-        tcp_offset = tcp_offset if tcp_offset is not None else self.franka_hand_tcp
-        return self.env.unwrapped.robot.get_ik().ik(pose, q0, tcp_offset)  # type: ignore[attr-defined]
+        return self.env.unwrapped.robot.get_ik().inverse(pose, q0, self.tcp_offset)  # type: ignore[attr-defined]
 
 
 class MjOStateSpace(ob.RealVectorStateSpace):
@@ -318,6 +319,7 @@ class MjOMPL:
         robot_joint_name: str,
         robot_actuator_name: str,
         njoints: int,
+        robot_tcp: Pose | None = None,
         obstacle_body_names: list | None = None,
         obstacle_geom_names: list | None = None,
         interpolate_num: int = INTERPOLATE_NUM,
@@ -368,6 +370,7 @@ class MjOMPL:
             robot_name,
             robot_env,
             njoints=njoints,
+            robot_tcp=robot_tcp,
             robot_xml_name=robot_xml_name,
             robot_root_name=robot_root_name,
             robot_joint_name=robot_joint_name,
@@ -485,7 +488,7 @@ class MjOMPL:
         sol_path_list = [np.array(sol_path, dtype=np.float32) for sol_path in sol_path_list]
         return res, sol_path_list
 
-    def ik(self, pose: Pose, q0: np.ndarray | None = None, tcp_offset: Pose | None = None):
+    def ik(self, pose: Pose, q0: np.ndarray | None = None):
         """
         Perform inverse kinematics to find joint positions that achieve the desired pose.
 
@@ -500,7 +503,7 @@ class MjOMPL:
         """
         if q0 is None:
             q0 = self.robot.get_joint_positions()
-        return self.robot.ik(pose, q0, tcp_offset)
+        return self.robot.ik(pose, q0)
 
     def state_to_list(self, state):
         """

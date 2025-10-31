@@ -11,11 +11,10 @@
 
 #include <memory>
 
-#include "rcs/IK.h"
+#include "rcs/Kinematics.h"
 #include "rcs/Pose.h"
 #include "rcs/Robot.h"
 #include "rcs/utils.h"
-#include "rl/mdl/UrdfFactory.h"
 
 // TODO: define exceptions
 
@@ -34,9 +33,9 @@ class PyRobot : public rcs::common::Robot {
  public:
   using rcs::common::Robot::Robot;  // Inherit constructors
 
-  rcs::common::RobotConfig *get_parameters() override {
+  rcs::common::RobotConfig *get_config() override {
     PYBIND11_OVERRIDE_PURE(rcs::common::RobotConfig *, rcs::common::Robot,
-                           get_parameters, );
+                           get_config, );
   }
 
   rcs::common::RobotState *get_state() override {
@@ -69,9 +68,10 @@ class PyRobot : public rcs::common::Robot {
   void close() override {
     PYBIND11_OVERRIDE_PURE(void, rcs::common::Robot, close, );
   }
-  std::optional<std::shared_ptr<rcs::common::IK>> get_ik() override {
-    PYBIND11_OVERRIDE_PURE(std::optional<std::shared_ptr<rcs::common::IK>>,
-                           rcs::common::Robot, get_ik, );
+  std::optional<std::shared_ptr<rcs::common::Kinematics>> get_ik() override {
+    PYBIND11_OVERRIDE_PURE(
+        std::optional<std::shared_ptr<rcs::common::Kinematics>>,
+        rcs::common::Robot, get_ik, );
   }
   rcs::common::Pose get_base_pose_in_world_coordinates() override {
     PYBIND11_OVERRIDE_PURE(rcs::common::Pose, rcs::common::Robot,
@@ -91,9 +91,9 @@ class PyGripper : public rcs::common::Gripper {
  public:
   using rcs::common::Gripper::Gripper;  // Inherit constructors
 
-  rcs::common::GripperConfig *get_parameters() override {
+  rcs::common::GripperConfig *get_config() override {
     PYBIND11_OVERRIDE_PURE(rcs::common::GripperConfig *, rcs::common::Gripper,
-                           get_parameters, );
+                           get_config, );
   }
 
   rcs::common::GripperState *get_state() override {
@@ -140,9 +140,9 @@ class PyHand : public rcs::common::Hand {
  public:
   using rcs::common::Hand::Hand;  // Inherit constructors
 
-  rcs::common::HandConfig *get_parameters() override {
+  rcs::common::HandConfig *get_config() override {
     PYBIND11_OVERRIDE_PURE(rcs::common::HandConfig *, rcs::common::Hand,
-                           get_parameters, );
+                           get_config, );
   }
 
   rcs::common::HandState *get_state() override {
@@ -286,18 +286,14 @@ PYBIND11_MODULE(_core, m) {
             return rcs::common::Pose(t);
           }));
 
-  py::class_<rcs::common::IK, std::shared_ptr<rcs::common::IK>>(common, "IK")
-      .def("ik", &rcs::common::IK::ik, py::arg("pose"), py::arg("q0"),
-           py::arg("tcp_offset") = rcs::common::Pose::Identity())
-      .def("forward", &rcs::common::IK::forward, py::arg("q0"),
+  py::class_<rcs::common::Kinematics, std::shared_ptr<rcs::common::Kinematics>>(
+      common, "Kinematics")
+      .def("inverse", &rcs::common::Kinematics::inverse, py::arg("pose"),
+           py::arg("q0"), py::arg("tcp_offset") = rcs::common::Pose::Identity())
+      .def("forward", &rcs::common::Kinematics::forward, py::arg("q0"),
            py::arg("tcp_offset") = rcs::common::Pose::Identity());
 
-  py::class_<rcs::common::RL, rcs::common::IK,
-             std::shared_ptr<rcs::common::RL>>(common, "RL")
-      .def(py::init<const std::string &, size_t>(), py::arg("urdf_path"),
-           py::arg("max_duration_ms") = 300);
-
-  py::class_<rcs::common::Pin, rcs::common::IK,
+  py::class_<rcs::common::Pin, rcs::common::Kinematics,
              std::shared_ptr<rcs::common::Pin>>(common, "Pin")
       .def(py::init<const std::string &, const std::string &, bool>(),
            py::arg("path"), py::arg("frame_id") = "fr3_link8",
@@ -356,7 +352,7 @@ PYBIND11_MODULE(_core, m) {
   py::class_<rcs::common::Robot, PyRobot, std::shared_ptr<rcs::common::Robot>>(
       common, "Robot")
       .def(py::init<>())
-      .def("get_parameters", &rcs::common::Robot::get_parameters)
+      .def("get_config", &rcs::common::Robot::get_config)
       .def("get_state", &rcs::common::Robot::get_state)
       .def("get_cartesian_position",
            &rcs::common::Robot::get_cartesian_position)
@@ -383,7 +379,7 @@ PYBIND11_MODULE(_core, m) {
   py::class_<rcs::common::Gripper, PyGripper,
              std::shared_ptr<rcs::common::Gripper>>(common, "Gripper")
       .def(py::init<>())
-      .def("get_parameters", &rcs::common::Gripper::get_parameters)
+      .def("get_config", &rcs::common::Gripper::get_config)
       .def("get_state", &rcs::common::Gripper::get_state)
       .def("set_normalized_width", &rcs::common::Gripper::set_normalized_width,
            py::arg("width"), py::arg("force") = 0)
@@ -403,7 +399,7 @@ PYBIND11_MODULE(_core, m) {
   py::class_<rcs::common::Hand, PyHand, std::shared_ptr<rcs::common::Hand>>(
       common, "Hand")
       .def(py::init<>())
-      .def("get_parameters", &rcs::common::Hand::get_parameters)
+      .def("get_config", &rcs::common::Hand::get_config)
       .def("get_state", &rcs::common::Hand::get_state)
       .def("set_normalized_joint_poses",
            &rcs::common::Hand::set_normalized_joint_poses, py::arg("q"))
@@ -430,7 +426,6 @@ PYBIND11_MODULE(_core, m) {
                      &rcs::sim::SimRobotConfig::joint_rotational_tolerance)
       .def_readwrite("seconds_between_callbacks",
                      &rcs::sim::SimRobotConfig::seconds_between_callbacks)
-      .def_readwrite("realtime", &rcs::sim::SimRobotConfig::realtime)
       .def_readwrite("mjcf_scene_path",
                      &rcs::sim::SimRobotConfig::mjcf_scene_path)
       .def_readwrite("trajectory_trace",
@@ -516,20 +511,18 @@ PYBIND11_MODULE(_core, m) {
       .def(py::init<std::shared_ptr<rcs::sim::Sim>,
                     const rcs::sim::SimGripperConfig &>(),
            py::arg("sim"), py::arg("cfg"))
-      .def("get_parameters", &rcs::sim::SimGripper::get_parameters)
+      .def("get_config", &rcs::sim::SimGripper::get_config)
       .def("get_state", &rcs::sim::SimGripper::get_state)
-      .def("set_parameters", &rcs::sim::SimGripper::set_parameters,
-           py::arg("cfg"));
+      .def("set_config", &rcs::sim::SimGripper::set_config, py::arg("cfg"));
   py::class_<rcs::sim::SimRobot, rcs::common::Robot,
              std::shared_ptr<rcs::sim::SimRobot>>(sim, "SimRobot")
       .def(py::init<std::shared_ptr<rcs::sim::Sim>,
-                    std::shared_ptr<rcs::common::IK>, rcs::sim::SimRobotConfig,
-                    bool>(),
+                    std::shared_ptr<rcs::common::Kinematics>,
+                    rcs::sim::SimRobotConfig, bool>(),
            py::arg("sim"), py::arg("ik"), py::arg("cfg"),
            py::arg("register_convergence_callback") = true)
-      .def("get_parameters", &rcs::sim::SimRobot::get_parameters)
-      .def("set_parameters", &rcs::sim::SimRobot::set_parameters,
-           py::arg("cfg"))
+      .def("get_config", &rcs::sim::SimRobot::get_config)
+      .def("set_config", &rcs::sim::SimRobot::set_config, py::arg("cfg"))
       .def("set_joints_hard", &rcs::sim::SimRobot::set_joints_hard,
            py::arg("q"))
       .def("get_state", &rcs::sim::SimRobot::get_state);
@@ -569,10 +562,9 @@ PYBIND11_MODULE(_core, m) {
       .def(py::init<std::shared_ptr<rcs::sim::Sim>,
                     const rcs::sim::SimTilburgHandConfig &>(),
            py::arg("sim"), py::arg("cfg"))
-      .def("get_parameters", &rcs::sim::SimTilburgHand::get_parameters)
+      .def("get_config", &rcs::sim::SimTilburgHand::get_config)
       .def("get_state", &rcs::sim::SimTilburgHand::get_state)
-      .def("set_parameters", &rcs::sim::SimTilburgHand::set_parameters,
-           py::arg("cfg"));
+      .def("set_config", &rcs::sim::SimTilburgHand::set_config, py::arg("cfg"));
 
   py::enum_<rcs::sim::CameraType>(sim, "CameraType")
       .value("free", rcs::sim::CameraType::free)

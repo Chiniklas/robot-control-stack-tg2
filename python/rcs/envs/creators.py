@@ -83,7 +83,7 @@ class SimEnvCreator(EnvCreator):
             robot_cfg.attachment_site,
             urdf=robot_cfg.kinematic_model_path.endswith(".urdf"),
         )
-        # ik = rcs.common.RL(robot_cfg.kinematic_model_path)
+        # ik = rcs_robotics_library._core.rl.RoboticsLibraryIK(robot_cfg.kinematic_model_path)
 
         robot = rcs.sim.SimRobot(simulation, ik, robot_cfg)
         env: gym.Env = RobotEnv(robot, control_mode)
@@ -157,14 +157,28 @@ class SimTaskEnvCreator(EnvCreator):
             _hand_cfg = None
             logger.info("Using gripper configuration.")
 
+        ## TODO: This code is messy
         random_env = RandomCubePos
+        obj_joint_name = "box_joint"
+        with_RCP = True
         if random_pos_args is not None:
             # check that all the keys are there
             required_keys = ["joint_name", "init_object_pose"]
             if not all(key in random_pos_args for key in required_keys):
                 missing_keys = [key for key in required_keys if key not in random_pos_args]
                 logger.warning(f"Missing random position arguments: {missing_keys}; Defaulting to RandomCubePos")
-            random_env = partial(RandomObjectPos, **random_pos_args)  # type: ignore
+            else:
+                logger.info(f"Initializing RandomObjectPos with joint name {random_pos_args['joint_name']}")
+                random_env = partial(RandomObjectPos, **random_pos_args)  # type: ignore
+                with_RCP = False
+
+            if "joint_name" in random_pos_args:
+                obj_joint_name = random_pos_args["joint_name"]
+
+        if with_RCP:
+            print(f"Initializing RandomCubePos with joint name {obj_joint_name}")
+            logger.warning(f"Initializing RandomCubePos with joint name {obj_joint_name}")
+            random_env = partial(RandomCubePos, cube_joint_name=obj_joint_name)  # type: ignore
 
         env_rel = SimEnvCreator()(
             control_mode=control_mode,
@@ -176,10 +190,10 @@ class SimTaskEnvCreator(EnvCreator):
             cameras=cameras,
             max_relative_movement=(0.2, np.deg2rad(45)) if delta_actions else None,
             relative_to=RelativeTo.LAST_STEP,
-            sim_wrapper=random_env,
+            sim_wrapper=random_env,  # type: ignore
         )
         if mode == "gripper":
-            env_rel = PickCubeSuccessWrapper(env_rel)
+            env_rel = PickCubeSuccessWrapper(env_rel, cube_joint_name=obj_joint_name)
 
         if render_mode == "human":
             env_rel.get_wrapper_attr("sim").open_gui()
@@ -258,7 +272,6 @@ class FR3LabDigitGripperPickUpSimEnvCreator(EnvCreator):
             rotation=np.array([[0.707, 0.707, 0], [-0.707, 0.707, 0], [0, 0, 1]]),  # type: ignore
         )
         robot_cfg.robot_type = rcs.common.RobotType.FR3
-        robot_cfg.realtime = False
         robot_cfg.add_id("0")  # only required for fr3
         robot_cfg.mjcf_scene_path = mjcf_path
         robot_cfg.kinematic_model_path = rcs.scenes["fr3_empty_world"].mjcf_robot  # .urdf (in case for urdf)

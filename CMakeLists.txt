@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.5)
 project(
     rcs
     LANGUAGES C CXX
-    VERSION 0.4.0
+    VERSION 0.5.2
     DESCRIPTION "Robot Control Stack Library"
 )
 
@@ -39,12 +39,6 @@ find_package(MuJoCo REQUIRED)
 find_package(pinocchio REQUIRED)
 
 
-FetchContent_Declare(rl
-    GIT_REPOSITORY https://github.com/roboticslibrary/rl.git
-    GIT_TAG 0b3797215345a1d37903634095361233d190b2e6
-    GIT_PROGRESS TRUE
-    EXCLUDE_FROM_ALL
-)
 FetchContent_Declare(pybind11
     GIT_REPOSITORY https://github.com/pybind/pybind11.git
     GIT_TAG v2.13.4
@@ -52,7 +46,7 @@ FetchContent_Declare(pybind11
     EXCLUDE_FROM_ALL
 )
 
-FetchContent_MakeAvailable(rl pybind11)
+FetchContent_MakeAvailable(pybind11)
 include(compile_scenes)
 
 add_subdirectory(src)
