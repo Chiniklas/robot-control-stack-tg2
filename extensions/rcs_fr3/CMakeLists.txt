@@ -62,6 +62,6 @@ FetchContent_Declare(pybind11
     EXCLUDE_FROM_ALL
 )
 
-FetchContent_MakeAvailable(rl libfranka pybind11)
+FetchContent_MakeAvailable(libfranka pybind11)
 
 add_subdirectory(src)
