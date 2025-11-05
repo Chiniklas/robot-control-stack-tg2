@@ -14,7 +14,6 @@
 #include "rcs/Robot.h"
 #include "rcs/utils.h"
 
-
 // TODO: define exceptions
 
 #define STRINGIFY(x) #x

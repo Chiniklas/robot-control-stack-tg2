@@ -1,12 +1,6 @@
 import logging
 
 from rcs.envs.base import ControlMode, RelativeTo
-from rcs.envs.creators import SimEnvCreator
-from rcs.envs.utils import (
-    default_mujoco_cameraset_cfg,
-    default_sim_gripper_cfg,
-    default_sim_robot_cfg,
-)
 from rcs_panda.creators import RCSPandaEnvCreator
 from rcs_panda.utils import default_panda_hw_gripper_cfg, default_panda_hw_robot_cfg
 

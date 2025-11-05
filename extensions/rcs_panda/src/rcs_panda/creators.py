@@ -2,7 +2,6 @@ import logging
 from os import PathLike
 
 import gymnasium as gym
-import numpy as np
 import rcs.hand.tilburg_hand
 from rcs.camera.hw import HardwareCameraSet
 from rcs.envs.base import (
@@ -19,7 +18,6 @@ from rcs.envs.creators import RCSHardwareEnvCreator
 from rcs.hand.tilburg_hand import TilburgHand
 from rcs_panda import hw
 from rcs_panda.envs import PandaHW
-from rcs_panda.utils import default_panda_hw_gripper_cfg, default_panda_hw_robot_cfg
 
 import rcs
 
@@ -143,5 +141,3 @@ class RCSPandaMultiEnvCreator(RCSHardwareEnvCreator):
             logger.info("CameraSet started")
             env = CameraSetWrapper(env, camera_set)
         return env
-
-
