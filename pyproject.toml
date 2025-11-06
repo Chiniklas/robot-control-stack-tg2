@@ -149,6 +149,10 @@ version_files = [
     "extensions/rcs_fr3/src/rcs_fr3/_core/__init__.pyi:__version__",
     "extensions/rcs_fr3/pyproject.toml:version",
 
+    "extensions/rcs_panda/CMakeLists.txt:VERSION",
+    "extensions/rcs_panda/src/rcs_fr3/_core/__init__.pyi:__version__",
+    "extensions/rcs_panda/pyproject.toml:version",
+
     "extensions/rcs_robotics_library/CMakeLists.txt:VERSION",
     "extensions/rcs_robotics_library/src/rcs_robotics_library/_core/__init__.pyi:__version__",
     "extensions/rcs_robotics_library/pyproject.toml:version",

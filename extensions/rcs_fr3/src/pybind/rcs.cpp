@@ -39,7 +39,7 @@ PYBIND11_MODULE(_core, m) {
 #endif
 
   // HARDWARE MODULE
-  auto hw = m.def_submodule("hw", "rcs fr3 module");
+  auto hw = m.def_submodule("hw", "rcs franka module");
 
   py::object robot_state =
       (py::object)py::module_::import("rcs").attr("common").attr("RobotState");
