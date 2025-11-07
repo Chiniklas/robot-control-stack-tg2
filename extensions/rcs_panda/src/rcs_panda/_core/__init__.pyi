@@ -1,8 +1,8 @@
 # ATTENTION: auto generated from C++ code, use `make stubgen` to update!
 """
 
-        Robot Control Stack Python Bindings
-        -----------------------
+        Franka Python Bindings
+        ----------------------
 
         .. currentmodule:: _core
 
@@ -15,5 +15,5 @@ from __future__ import annotations
 
 from . import hw
 
-__all__ = ["hw"]
+__all__: list[str] = ["hw"]
 __version__: str = "0.5.2"

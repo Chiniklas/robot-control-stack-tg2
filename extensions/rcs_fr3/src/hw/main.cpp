@@ -8,7 +8,7 @@
 #include <optional>
 #include <string>
 
-#include "FR3.h"
+#include "Franka.h"
 
 using namespace std;
 
@@ -18,7 +18,7 @@ const string urdf_path = "models/urdf/fr3.urdf";
 int main() {
   try {
     auto ik = make_shared<rcs::common::RL>(urdf_path);
-    rcs::hw::FR3 robot(ip, ik);
+    rcs::hw::Franka robot(ip, ik);
     robot.automatic_error_recovery();
     std::cout << "WARNING: This example will move the robot! "
               << "Please make sure to have the user stop button at hand!"

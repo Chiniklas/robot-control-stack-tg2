@@ -1,5 +1,5 @@
-#ifndef RCS_FR3_H
-#define RCS_FR3_H
+#ifndef RCS_FRANKA_H
+#define RCS_FRANKA_H
 
 #include <franka/robot.h>
 
@@ -21,7 +21,7 @@ namespace hw {
 
 const double DEFAULT_SPEED_FACTOR = 0.2;
 
-struct FR3Load {
+struct FrankaLoad {
   double load_mass;
   std::optional<Eigen::Vector3d> f_x_cload;
   std::optional<Eigen::Matrix3d> load_inertia;
@@ -30,26 +30,32 @@ enum IKSolver { franka_ik = 0, rcs_ik };
 // modes: joint-space control, operational-space control, zero-torque
 // control
 enum Controller { none = 0, jsc, osc, ztc };
-struct FR3Config : common::RobotConfig {
+struct FrankaConfig : common::RobotConfig {
   // TODO: max force and elbow?
   // TODO: we can either write specific bindings for each, or we use python
   // dictionaries with these objects
   common::RobotType robot_type = common::RobotType::FR3;
   common::RobotPlatform robot_platform = common::RobotPlatform::HARDWARE;
-  IKSolver ik_solver = IKSolver::franka_ik;
+  IKSolver ik_solver = IKSolver::rcs_ik;
   double speed_factor = DEFAULT_SPEED_FACTOR;
-  std::optional<FR3Load> load_parameters = std::nullopt;
+  std::optional<FrankaLoad> load_parameters = std::nullopt;
   std::optional<common::Pose> nominal_end_effector_frame = std::nullopt;
   std::optional<common::Pose> world_to_robot = std::nullopt;
   bool async_control = false;
 };
 
-struct FR3State : common::RobotState {};
+struct FR3Config : FrankaConfig {};
+struct PandaConfig : FrankaConfig {
+  common::RobotType robot_type = common::RobotType::Panda;
+};
 
-class FR3 : public common::Robot {
+
+struct FrankaState : common::RobotState {};
+
+class Franka : public common::Robot {
  private:
   franka::Robot robot;
-  FR3Config cfg;
+  FrankaConfig cfg;
   std::optional<std::shared_ptr<common::Kinematics>> m_ik;
   std::optional<std::thread> control_thread = std::nullopt;
   common::LinearPoseTrajInterpolator traj_interpolator;
@@ -63,16 +69,16 @@ class FR3 : public common::Robot {
   void zero_torque_controller();
 
  public:
-  FR3(const std::string &ip,
+  Franka(const std::string &ip,
       std::optional<std::shared_ptr<common::Kinematics>> ik = std::nullopt,
-      const std::optional<FR3Config> &cfg = std::nullopt);
-  ~FR3() override;
+      const std::optional<FrankaConfig> &cfg = std::nullopt);
+  ~Franka() override;
 
-  bool set_config(const FR3Config &cfg);
+  bool set_config(const FrankaConfig &cfg);
 
-  FR3Config *get_config() override;
+  FrankaConfig *get_config() override;
 
-  FR3State *get_state() override;
+  FrankaState *get_state() override;
 
   void set_default_robot_behavior();
 
@@ -119,4 +125,4 @@ class FR3 : public common::Robot {
 }  // namespace hw
 }  // namespace rcs
 
-#endif  // RCS_FR3_H
+#endif  // RCS_FRANKA_H

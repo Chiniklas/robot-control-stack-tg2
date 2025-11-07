@@ -4,7 +4,7 @@ exceptions from the hardware module
 """
 from __future__ import annotations
 
-__all__ = [
+__all__: list[str] = [
     "FrankaCommandException",
     "FrankaControlException",
     "FrankaException",

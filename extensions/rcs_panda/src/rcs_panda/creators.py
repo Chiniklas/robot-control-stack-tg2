@@ -30,7 +30,7 @@ class RCSPandaEnvCreator(RCSHardwareEnvCreator):
         self,
         ip: str,
         control_mode: ControlMode,
-        robot_cfg: hw.FR3Config,
+        robot_cfg: hw.PandaConfig,
         collision_guard: str | PathLike | None = None,
         gripper_cfg: hw.FHConfig | rcs.hand.tilburg_hand.THConfig | None = None,
         camera_set: HardwareCameraSet | None = None,
@@ -65,11 +65,13 @@ class RCSPandaEnvCreator(RCSHardwareEnvCreator):
         )
         # ik = rcs_robotics_library._core.rl.RoboticsLibraryIK(robot_cfg.kinematic_model_path)
 
-        robot = hw.FR3(ip, ik)
+        robot = hw.Franka(ip, ik)
         robot.set_config(robot_cfg)
 
         env: gym.Env = RobotEnv(
-            robot, ControlMode.JOINTS if collision_guard is not None else control_mode, home_on_reset=True
+            robot,
+            ControlMode.JOINTS if collision_guard is not None else control_mode,
+            home_on_reset=True,
         )
 
         env = PandaHW(env)
@@ -109,7 +111,7 @@ class RCSPandaMultiEnvCreator(RCSHardwareEnvCreator):
     def __call__(  # type: ignore
         ips: list[str],
         control_mode: ControlMode,
-        robot_cfg: hw.FR3Config,
+        robot_cfg: hw.PandaConfig,
         gripper_cfg: hw.FHConfig | None = None,
         camera_set: HardwareCameraSet | None = None,
         max_relative_movement: float | tuple[float, float] | None = None,
@@ -123,9 +125,9 @@ class RCSPandaMultiEnvCreator(RCSHardwareEnvCreator):
         )
         # ik = rcs_robotics_library._core.rl.RoboticsLibraryIK(robot_cfg.kinematic_model_path)
 
-        robots: dict[str, hw.FR3] = {}
+        robots: dict[str, hw.Franka] = {}
         for ip in ips:
-            robots[ip] = hw.FR3(ip, ik)
+            robots[ip] = hw.Franka(ip, ik)
             robots[ip].set_config(robot_cfg)
 
         envs = {}

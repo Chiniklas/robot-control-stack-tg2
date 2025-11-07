@@ -37,7 +37,7 @@ def load_creds_fr3_desk() -> tuple[str, str]:
 
 def home(ip: str, username: str, password: str, shut: bool, unlock: bool = False):
     with Desk.fci(ip, username, password, unlock=unlock):
-        f = rcs_fr3.hw.FR3(ip)
+        f = rcs_fr3.hw.Franka(ip)
         config = rcs_fr3.hw.FR3Config()
         config.speed_factor = 0.2
         config.ik_solver = rcs_fr3.hw.IKSolver.franka_ik
@@ -53,7 +53,7 @@ def home(ip: str, username: str, password: str, shut: bool, unlock: bool = False
 
 def info(ip: str, username: str, password: str, include_hand: bool = False):
     with Desk.fci(ip, username, password):
-        f = rcs_fr3.hw.FR3(ip)
+        f = rcs_fr3.hw.Franka(ip)
         config = rcs_fr3.hw.FR3Config()
         f.set_config(config)
         print("Robot info:")

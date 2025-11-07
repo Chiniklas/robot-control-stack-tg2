@@ -11,15 +11,17 @@ import rcs._core.common
 
 from . import exceptions
 
-__all__ = [
+__all__: list[str] = [
     "FHConfig",
     "FHState",
-    "FR3",
     "FR3Config",
-    "FR3Load",
-    "FR3State",
+    "Franka",
+    "FrankaConfig",
     "FrankaHand",
+    "FrankaLoad",
+    "FrankaState",
     "IKSolver",
+    "PandaConfig",
     "exceptions",
     "franka_ik",
     "rcs_ik",
@@ -51,7 +53,7 @@ class FHState(rcs._core.common.GripperState):
     @property
     def width(self) -> float: ...
 
-class FR3(rcs._core.common.Robot):
+class Franka(rcs._core.common.Robot):
     def __init__(self, ip: str, ik: rcs._core.common.Kinematics | None = None) -> None: ...
     def automatic_error_recovery(self) -> None: ...
     def controller_set_joint_position(
@@ -59,8 +61,8 @@ class FR3(rcs._core.common.Robot):
         desired_q: numpy.ndarray[tuple[typing.Literal[7]], numpy.dtype[numpy.float64]],
     ) -> None: ...
     def double_tap_robot_to_continue(self) -> None: ...
-    def get_config(self) -> FR3Config: ...
-    def get_state(self) -> FR3State: ...
+    def get_config(self) -> FrankaConfig: ...
+    def get_state(self) -> FrankaState: ...
     def osc_set_cartesian_position(self, desired_pos_EE_in_base_frame: rcs._core.common.Pose) -> None: ...
     def set_cartesian_position_ik(
         self,
@@ -70,7 +72,7 @@ class FR3(rcs._core.common.Robot):
         max_force: float | None = 5,
     ) -> None: ...
     def set_cartesian_position_internal(self, pose: rcs._core.common.Pose) -> None: ...
-    def set_config(self, cfg: FR3Config) -> bool: ...
+    def set_config(self, cfg: FrankaConfig) -> bool: ...
     def set_default_robot_behavior(self) -> None: ...
     def set_guiding_mode(
         self,
@@ -85,22 +87,13 @@ class FR3(rcs._core.common.Robot):
     def stop_control_thread(self) -> None: ...
     def zero_torque_guiding(self) -> None: ...
 
-class FR3Config(rcs._core.common.RobotConfig):
+class FrankaConfig(rcs._core.common.RobotConfig):
     async_control: bool
     ik_solver: IKSolver
-    load_parameters: FR3Load | None
+    load_parameters: FrankaLoad | None
     nominal_end_effector_frame: rcs._core.common.Pose | None
     speed_factor: float
     world_to_robot: rcs._core.common.Pose | None
-    def __init__(self) -> None: ...
-
-class FR3Load:
-    f_x_cload: numpy.ndarray[tuple[typing.Literal[3]], numpy.dtype[numpy.float64]] | None
-    load_inertia: numpy.ndarray[tuple[typing.Literal[3], typing.Literal[3]], numpy.dtype[numpy.float64]] | None
-    load_mass: float
-    def __init__(self) -> None: ...
-
-class FR3State(rcs._core.common.RobotState):
     def __init__(self) -> None: ...
 
 class FrankaHand(rcs._core.common.Gripper):
@@ -110,6 +103,15 @@ class FrankaHand(rcs._core.common.Gripper):
     def homing(self) -> bool: ...
     def is_grasped(self) -> bool: ...
     def set_config(self, cfg: FHConfig) -> bool: ...
+
+class FrankaLoad:
+    f_x_cload: numpy.ndarray[tuple[typing.Literal[3]], numpy.dtype[numpy.float64]] | None
+    load_inertia: numpy.ndarray[tuple[typing.Literal[3], typing.Literal[3]], numpy.dtype[numpy.float64]] | None
+    load_mass: float
+    def __init__(self) -> None: ...
+
+class FrankaState(rcs._core.common.RobotState):
+    def __init__(self) -> None: ...
 
 class IKSolver:
     """
@@ -139,6 +141,12 @@ class IKSolver:
     def name(self) -> str: ...
     @property
     def value(self) -> int: ...
+
+class FR3Config(FrankaConfig):
+    pass
+
+class PandaConfig(FrankaConfig):
+    pass
 
 franka_ik: IKSolver  # value = <IKSolver.franka_ik: 0>
 rcs_ik: IKSolver  # value = <IKSolver.rcs_ik: 1>

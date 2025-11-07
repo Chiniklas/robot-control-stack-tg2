@@ -1,5 +1,5 @@
-#ifndef RCS_FR3SIM_H
-#define RCS_FR3SIM_H
+#ifndef RCS_SIMROBOT_H
+#define RCS_SIMROBOT_H
 #include <mujoco/mujoco.h>
 #include <rcs/Kinematics.h>
 #include <rcs/Pose.h>
@@ -98,4 +98,4 @@ class SimRobot : public common::Robot {
 };
 }  // namespace sim
 }  // namespace rcs
-#endif  // RCS_FR3SIM_H
+#endif  // RCS_SIMROBOT_H
