@@ -49,7 +49,6 @@ struct PandaConfig : FrankaConfig {
   common::RobotType robot_type = common::RobotType::Panda;
 };
 
-
 struct FrankaState : common::RobotState {};
 
 class Franka : public common::Robot {
@@ -70,8 +69,8 @@ class Franka : public common::Robot {
 
  public:
   Franka(const std::string &ip,
-      std::optional<std::shared_ptr<common::Kinematics>> ik = std::nullopt,
-      const std::optional<FrankaConfig> &cfg = std::nullopt);
+         std::optional<std::shared_ptr<common::Kinematics>> ik = std::nullopt,
+         const std::optional<FrankaConfig> &cfg = std::nullopt);
   ~Franka() override;
 
   bool set_config(const FrankaConfig &cfg);

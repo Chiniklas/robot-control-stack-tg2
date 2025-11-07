@@ -527,7 +527,11 @@ class FCI(ContextManager):
     """
 
     def __init__(
-        self, desk: Desk, unlock: bool = False, lock_when_done: bool = True, guiding_mode_when_done: bool = True
+        self,
+        desk: Desk,
+        unlock: bool = False,
+        lock_when_done: bool = True,
+        guiding_mode_when_done: bool = True,
     ):
         self.desk = desk
         self.unlock = unlock

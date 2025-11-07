@@ -20,8 +20,8 @@
 namespace rcs {
 namespace hw {
 Franka::Franka(const std::string &ip,
-         std::optional<std::shared_ptr<common::Kinematics>> ik,
-         const std::optional<FrankaConfig> &cfg)
+               std::optional<std::shared_ptr<common::Kinematics>> ik,
+               const std::optional<FrankaConfig> &cfg)
     : robot(ip), m_ik(ik) {
   // set collision behavior and impedance
   this->set_default_robot_behavior();
@@ -123,7 +123,7 @@ common::VectorXd Franka::get_joint_position() {
 }
 
 void Franka::set_guiding_mode(bool x, bool y, bool z, bool roll, bool pitch,
-                           bool yaw, bool elbow) {
+                              bool yaw, bool elbow) {
   std::array<bool, 6> activated = {x, y, z, roll, pitch, yaw};
   this->robot.setGuidingMode(activated, elbow);
 }
@@ -586,7 +586,9 @@ void Franka::move_home() {
   this->robot.control(motion_generator);
 }
 
-void Franka::automatic_error_recovery() { this->robot.automaticErrorRecovery(); }
+void Franka::automatic_error_recovery() {
+  this->robot.automaticErrorRecovery();
+}
 
 void Franka::reset() {
   this->stop_control_thread();
@@ -707,9 +709,9 @@ common::Pose Franka::get_base_pose_in_world_coordinates() {
 }
 
 void Franka::set_cartesian_position_internal(const common::Pose &pose,
-                                          double max_time,
-                                          std::optional<double> elbow,
-                                          std::optional<double> max_force) {
+                                             double max_time,
+                                             std::optional<double> elbow,
+                                             std::optional<double> max_force) {
   // TODO: use speed factor instead of max_time
   common::Pose initial_pose = this->get_cartesian_position();
 

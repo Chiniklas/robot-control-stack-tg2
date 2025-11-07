@@ -43,7 +43,8 @@ PYBIND11_MODULE(_core, m) {
 
   py::object robot_state =
       (py::object)py::module_::import("rcs").attr("common").attr("RobotState");
-  py::class_<rcs::hw::FrankaState>(hw, "FrankaState", robot_state).def(py::init<>());
+  py::class_<rcs::hw::FrankaState>(hw, "FrankaState", robot_state)
+      .def(py::init<>());
   py::class_<rcs::hw::FrankaLoad>(hw, "FrankaLoad")
       .def(py::init<>())
       .def_readwrite("load_mass", &rcs::hw::FrankaLoad::load_mass)
@@ -99,7 +100,8 @@ PYBIND11_MODULE(_core, m) {
 
   py::object robot =
       (py::object)py::module_::import("rcs").attr("common").attr("Robot");
-  py::class_<rcs::hw::Franka, std::shared_ptr<rcs::hw::Franka>>(hw, "Franka", robot)
+  py::class_<rcs::hw::Franka, std::shared_ptr<rcs::hw::Franka>>(hw, "Franka",
+                                                                robot)
       .def(py::init<const std::string &,
                     std::optional<std::shared_ptr<rcs::common::Kinematics>>>(),
            py::arg("ip"), py::arg("ik") = std::nullopt)
@@ -117,9 +119,11 @@ PYBIND11_MODULE(_core, m) {
            &rcs::hw::Franka::osc_set_cartesian_position,
            py::arg("desired_pos_EE_in_base_frame"))
       .def("controller_set_joint_position",
-           &rcs::hw::Franka::controller_set_joint_position, py::arg("desired_q"))
+           &rcs::hw::Franka::controller_set_joint_position,
+           py::arg("desired_q"))
       .def("stop_control_thread", &rcs::hw::Franka::stop_control_thread)
-      .def("automatic_error_recovery", &rcs::hw::Franka::automatic_error_recovery)
+      .def("automatic_error_recovery",
+           &rcs::hw::Franka::automatic_error_recovery)
       .def("double_tap_robot_to_continue",
            &rcs::hw::Franka::double_tap_robot_to_continue)
       .def("set_cartesian_position_internal",

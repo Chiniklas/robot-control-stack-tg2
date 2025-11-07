@@ -147,7 +147,8 @@ int test_sim() {
             "robot should not be moving at the end of a step");
       }
       if (not state->is_arrived) {
-        throw std::runtime_error("robot should be arrived at the end of a step");
+        throw std::runtime_error(
+            "robot should be arrived at the end of a step");
       }
       /* According to fact sheet, pose repeatability within iso cube is 0.1
        * millimeters, i.e. 0.0001 meters.
