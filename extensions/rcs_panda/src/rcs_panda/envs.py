@@ -12,8 +12,8 @@ class PandaHW(gym.Wrapper):
     def __init__(self, env):
         super().__init__(env)
         self.unwrapped: RobotEnv
-        assert isinstance(self.unwrapped.robot, hw.Panda), "Robot must be a hw.Panda instance."
-        self.hw_robot = cast(hw.Panda, self.unwrapped.robot)
+        assert isinstance(self.unwrapped.robot, hw.FR3), "Robot must be a hw.Panda instance."
+        self.hw_robot = cast(hw.FR3, self.unwrapped.robot)
 
     def step(self, action: Any) -> tuple[dict[str, Any], SupportsFloat, bool, bool, dict]:
         try:

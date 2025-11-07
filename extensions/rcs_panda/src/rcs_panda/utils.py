@@ -3,8 +3,8 @@ from rcs_panda._core import hw
 from rcs import common
 
 
-def default_panda_hw_robot_cfg(async_control: bool = False) -> hw.PandaConfig:
-    robot_cfg = hw.PandaConfig()
+def default_panda_hw_robot_cfg(async_control: bool = False) -> hw.FR3Config:
+    robot_cfg = hw.FR3Config()
     robot_cfg.tcp_offset = common.Pose(common.FrankaHandTCPOffset())
     robot_cfg.speed_factor = 0.1
     robot_cfg.ik_solver = hw.IKSolver.rcs_ik

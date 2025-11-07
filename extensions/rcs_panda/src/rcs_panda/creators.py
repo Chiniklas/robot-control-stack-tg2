@@ -30,13 +30,12 @@ class RCSPandaEnvCreator(RCSHardwareEnvCreator):
         self,
         ip: str,
         control_mode: ControlMode,
-        robot_cfg: hw.PandaConfig,
+        robot_cfg: hw.FR3Config,
         collision_guard: str | PathLike | None = None,
         gripper_cfg: hw.FHConfig | rcs.hand.tilburg_hand.THConfig | None = None,
         camera_set: HardwareCameraSet | None = None,
         max_relative_movement: float | tuple[float, float] | None = None,
         relative_to: RelativeTo = RelativeTo.LAST_STEP,
-        urdf_path: str | PathLike | None = None,
     ) -> gym.Env:
         """
         Creates a hardware environment for the Panda robot.
@@ -55,16 +54,19 @@ class RCSPandaEnvCreator(RCSHardwareEnvCreator):
                 translational movement in meters. If tuple, it restricts both translational (in meters) and rotational
                 (in radians) movements. If None, no restriction is applied.
             relative_to (RelativeTo): Specifies whether the movement is relative to a configured origin or the last step.
-            urdf_path (str | PathLike | None): Path to the URDF file. If None the included one is used. A URDF file is needed for collision guarding.
 
         Returns:
             gym.Env: The configured hardware environment for the Panda robot.
         """
-        if urdf_path is None:
-            urdf_path = rcs.scenes["Panda_empty_world"].urdf
-        ik = rcs.common.RL(str(urdf_path)) if urdf_path is not None else None
-        robot = hw.Panda(ip, ik)
-        robot.set_parameters(robot_cfg)
+        ik = rcs.common.Pin(
+            robot_cfg.kinematic_model_path,
+            robot_cfg.attachment_site,
+            urdf=robot_cfg.kinematic_model_path.endswith(".urdf"),
+        )
+        # ik = rcs_robotics_library._core.rl.RoboticsLibraryIK(robot_cfg.kinematic_model_path)
+
+        robot = hw.FR3(ip, ik)
+        robot.set_config(robot_cfg)
 
         env: gym.Env = RobotEnv(
             robot, ControlMode.JOINTS if collision_guard is not None else control_mode, home_on_reset=True
@@ -107,20 +109,24 @@ class RCSPandaMultiEnvCreator(RCSHardwareEnvCreator):
     def __call__(  # type: ignore
         ips: list[str],
         control_mode: ControlMode,
-        robot_cfg: hw.PandaConfig,
+        robot_cfg: hw.FR3Config,
         gripper_cfg: hw.FHConfig | None = None,
         camera_set: HardwareCameraSet | None = None,
         max_relative_movement: float | tuple[float, float] | None = None,
         relative_to: RelativeTo = RelativeTo.LAST_STEP,
-        urdf_path: str | PathLike | None = None,
     ) -> gym.Env:
 
-        urdf_path = rcs.scenes["panda_empty_world"].urdf
-        ik = rcs.common.RL(str(urdf_path)) if urdf_path is not None else None
-        robots: dict[str, hw.Panda] = {}
+        ik = rcs.common.Pin(
+            robot_cfg.kinematic_model_path,
+            robot_cfg.attachment_site,
+            urdf=robot_cfg.kinematic_model_path.endswith(".urdf"),
+        )
+        # ik = rcs_robotics_library._core.rl.RoboticsLibraryIK(robot_cfg.kinematic_model_path)
+
+        robots: dict[str, hw.FR3] = {}
         for ip in ips:
-            robots[ip] = hw.Panda(ip, ik)
-            robots[ip].set_parameters(robot_cfg)
+            robots[ip] = hw.FR3(ip, ik)
+            robots[ip].set_config(robot_cfg)
 
         envs = {}
         for ip in ips:
