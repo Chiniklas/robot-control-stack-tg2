@@ -63,6 +63,6 @@ FetchContent_Declare(pybind11
 )
 
 FetchContent_MakeAvailable(libfranka pybind11)
-set_target_properties(franka PROPERTIES CXX_STANDARD 20)
+set_target_properties(franka PROPERTIES CXX_STANDARD 17)
 
 add_subdirectory(src_fr3)
