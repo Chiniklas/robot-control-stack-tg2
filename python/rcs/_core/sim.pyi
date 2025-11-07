@@ -9,7 +9,7 @@ import typing
 import numpy
 import rcs._core.common
 
-__all__ = [
+__all__: list[str] = [
     "CameraType",
     "FrameSet",
     "GuiClient",

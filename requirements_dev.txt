@@ -4,7 +4,9 @@ isort==5.13.2
 mypy==1.10.1
 pyopengl==3.1.9
 types-requests~=2.31
-pybind11-stubgen==2.5.1
+# temporarily use fixed version until PR #275 is merged
+# pybind11-stubgen==2.5.5
+pybind11-stubgen @ git+https://github.com/juelg/pybind11-stubgen@fix/class-sorting
 build
 pytest==8.1.1
 commitizen~=3.28.0

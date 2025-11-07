@@ -34,15 +34,15 @@ void setDefaultBehavior(franka::Robot& robot);
  * Identification and Control of Robots (Kogan Page Science Paper edition).
  *
  */
-class FR3MotionGenerator {
+class FrankaMotionGenerator {
  public:
   /**
-   * Creates a new FR3MotionGenerator instance for a target q.
+   * Creates a new FrankaMotionGenerator instance for a target q.
    *
    * @param[in] speed_factor General speed factor in range [0, 1].
    * @param[in] q_goal Target joint positions.
    */
-  FR3MotionGenerator(double speed_factor, const common::Vector7d q_goal);
+  FrankaMotionGenerator(double speed_factor, const common::Vector7d q_goal);
 
   /**
    * Sends joint position calculations

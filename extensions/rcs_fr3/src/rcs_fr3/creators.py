@@ -47,7 +47,6 @@ class RCSFR3EnvCreator(RCSHardwareEnvCreator):
             control_mode (ControlMode): Control mode for the robot.
             robot_cfg (hw.FR3Config): Configuration for the FR3 robot.
             collision_guard (str | PathLike | None): Key to a built-in scene
-            robot_cfg (hw.FR3Config): Configuration for the FR3 robot.
             gripper_cfg (hw.FHConfig | None): Configuration for the gripper. If None, no gripper is used.
             camera_set (BaseHardwareCameraSet | None): Camera set to be used. If None, no cameras are used.
             max_relative_movement (float | tuple[float, float] | None): Maximum allowed movement. If float, it restricts
@@ -64,7 +63,7 @@ class RCSFR3EnvCreator(RCSHardwareEnvCreator):
             urdf=robot_cfg.kinematic_model_path.endswith(".urdf"),
         )
         # ik = rcs_robotics_library._core.rl.RoboticsLibraryIK(robot_cfg.kinematic_model_path)
-        robot = hw.FR3(ip, ik)
+        robot = hw.Franka(ip, ik)
         robot.set_config(robot_cfg)
 
         env: gym.Env = RobotEnv(robot, ControlMode.JOINTS if collision_guard is not None else control_mode)
@@ -121,9 +120,9 @@ class RCSFR3MultiEnvCreator(RCSHardwareEnvCreator):
         )
         # ik = rcs_robotics_library._core.rl.RoboticsLibraryIK(robot_cfg.kinematic_model_path)
 
-        robots: dict[str, hw.FR3] = {}
+        robots: dict[str, hw.Franka] = {}
         for ip in ips:
-            robots[ip] = hw.FR3(ip, ik)
+            robots[ip] = hw.Franka(ip, ik)
             robots[ip].set_config(robot_cfg)
 
         envs = {}
