@@ -10,10 +10,10 @@ from dataclasses import dataclass
 from typing import Callable, Literal
 from urllib import parse
 
-import rcs_fr3
+import rcs_panda
 import requests
 from dotenv import load_dotenv
-from rcs_fr3.utils import default_fr3_hw_gripper_cfg
+from rcs_panda.utils import default_panda_hw_gripper_cfg
 from requests.packages import urllib3  # type: ignore[attr-defined]
 from websockets.sync.client import connect
 
@@ -29,7 +29,7 @@ in this file under the unit's IP address or hostname.
 
 
 def load_creds_franka_desk(postfix: str = "") -> tuple[str, str]:
-    """Loads the FR3 Desk credentials from a .env file.
+    """Loads the Panda Desk credentials from a .env file.
 
     The keys in the .env file are expected to be DESK_USERNAME and DESK_PASSWORD.
 
@@ -47,12 +47,12 @@ def load_creds_franka_desk(postfix: str = "") -> tuple[str, str]:
 
 def home(ip: str, username: str, password: str, shut: bool, unlock: bool = False):
     with Desk.fci(ip, username, password, unlock=unlock):
-        f = rcs_fr3.hw.Franka(ip)
-        config = rcs_fr3.hw.FR3Config()
+        f = rcs_panda.hw.Franka(ip)
+        config = rcs_panda.hw.PandaConfig()
         config.speed_factor = 0.2
         f.set_config(config)
-        config_hand = rcs_fr3.hw.FHConfig()
-        g = rcs_fr3.hw.FrankaHand(ip, config_hand)
+        config_hand = rcs_panda.hw.FHConfig()
+        g = rcs_panda.hw.FrankaHand(ip, config_hand)
         if shut:
             g.shut()
         else:
@@ -62,8 +62,8 @@ def home(ip: str, username: str, password: str, shut: bool, unlock: bool = False
 
 def info(ip: str, username: str, password: str, include_hand: bool = False):
     with Desk.fci(ip, username, password):
-        f = rcs_fr3.hw.Franka(ip)
-        config = rcs_fr3.hw.FR3Config()
+        f = rcs_panda.hw.Franka(ip)
+        config = rcs_panda.hw.PandaConfig()
         f.set_config(config)
         print("Robot info:")
         print("Current cartesian position:")
@@ -71,8 +71,8 @@ def info(ip: str, username: str, password: str, include_hand: bool = False):
         print("Current joint position:")
         print(f.get_joint_position())
         if include_hand:
-            config_hand = default_fr3_hw_gripper_cfg()
-            g = rcs_fr3.hw.FrankaHand(ip, config_hand)
+            config_hand = default_panda_hw_gripper_cfg()
+            g = rcs_panda.hw.FrankaHand(ip, config_hand)
             print("Gripper info:")
             print("Current normalized width:")
             print(g.get_normalized_width())
@@ -218,7 +218,7 @@ class Desk(ContextManager):
         """
         Locks the brakes. API call blocks until the brakes are locked.
         """
-        self._request("post", "/desk/api/joints/lock", files={"force": force})  # type: ignore[dict-item]
+        self._request("post", "/desk/api/robot/close-brakes", files={"force": force})  # type: ignore[dict-item]
         self.locked = True
 
     def unlock(self, force: bool = True) -> None:
@@ -227,7 +227,7 @@ class Desk(ContextManager):
         """
         self._request(
             "post",
-            "/desk/api/joints/unlock",
+            "/desk/api/robot/open-brakes",
             files={"force": force},  # type: ignore[dict-item]
             headers={"X-Control-Token": self._token.token},
         )
@@ -283,7 +283,7 @@ class Desk(ContextManager):
         """
         self._request(
             "post",
-            "/desk/api/system/fci",
+            "/admin/api/control-token/fci",
             headers={"X-Control-Token": self._token.token},
         )
         # sleep needed to make sure fci has really been activated on the frankas side
