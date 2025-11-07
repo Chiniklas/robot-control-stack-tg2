@@ -19,12 +19,12 @@ cpplint:
 
 gcccompile: 
 	pip install --upgrade --requirement requirements_dev.txt
-	cmake -DCMAKE_BUILD_TYPE=${COMPILE_MODE} -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -B build -G Ninja
+	cmake -DCMAKE_BUILD_TYPE=${COMPILE_MODE} -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -B build -G Ninja $(if ${PYTHON_EXECUTABLE},-DPython3_EXECUTABLE=${PYTHON_EXECUTABLE})
 	cmake --build build --target _core
 
 clangcompile: 
 	pip install --upgrade --requirement requirements_dev.txt
-	cmake -DCMAKE_BUILD_TYPE=${COMPILE_MODE} -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -B build -G Ninja
+	cmake -DCMAKE_BUILD_TYPE=${COMPILE_MODE} -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -B build -G Ninja $(if ${PYTHON_EXECUTABLE},-DPython3_EXECUTABLE=${PYTHON_EXECUTABLE})
 	cmake --build build --target _core
 
 # Auto generation of CPP binding stub files

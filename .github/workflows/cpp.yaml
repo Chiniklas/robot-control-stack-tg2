@@ -19,12 +19,13 @@ jobs:
       - name: Check clang format
         run: make cppcheckformat
       - name: Set up Python 3.11
+        id: setup-python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
           cache: "pip"
       - name: Clang build
-        run: make clangcompile
+        run: make clangcompile PYTHON_EXECUTABLE=${{ steps.setup-python.outputs.python-path }}
       - name: Clang Tidy
         run: clang-tidy -p=build --warnings-as-errors='*' $(find src -name '*.cpp' -o -name '*.cc' -name '*.h')
 
@@ -35,9 +36,10 @@ jobs:
       - name: Install dependencies
         run: sudo apt install $(cat debian_deps.txt)
       - name: Set up Python 3.11
+        id: setup-python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
           cache: "pip"
       - name: GCC build
-        run: make gcccompile
+        run: make gcccompile PYTHON_EXECUTABLE=${{ steps.setup-python.outputs.python-path }}
