@@ -87,14 +87,6 @@ class SimEnvCreator(EnvCreator):
 
         robot = rcs.sim.SimRobot(simulation, ik, robot_cfg)
         env: gym.Env = RobotEnv(robot, control_mode)
-        env = RobotSimWrapper(env, simulation, sim_wrapper)
-
-        if cameras is not None:
-            camera_set = typing.cast(
-                BaseCameraSet, SimCameraSet(simulation, cameras, physical_units=True, render_on_demand=True)
-            )
-            env = CameraSetWrapper(env, camera_set, include_depth=True)
-
         assert not (
             hand_cfg is not None and gripper_cfg is not None
         ), "Hand and gripper configurations cannot be used together."
@@ -107,7 +99,19 @@ class SimEnvCreator(EnvCreator):
         if gripper_cfg is not None and isinstance(gripper_cfg, rcs.sim.SimGripperConfig):
             gripper = sim.SimGripper(simulation, gripper_cfg)
             env = GripperWrapper(env, gripper, binary=True)
+        else:
+            gripper = None
+
+        env = RobotSimWrapper(env, simulation, sim_wrapper)
+
+        if gripper is not None:
             env = GripperWrapperSim(env, gripper)
+
+        if cameras is not None:
+            camera_set = typing.cast(
+                BaseCameraSet, SimCameraSet(simulation, cameras, physical_units=True, render_on_demand=True)
+            )
+            env = CameraSetWrapper(env, camera_set, include_depth=True)
 
         # TODO: collision guard not working atm
         # if collision_guard:

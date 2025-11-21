@@ -463,7 +463,7 @@ PYBIND11_MODULE(_core, m) {
                      &rcs::sim::SimGripperConfig::collision_geoms)
       .def_readwrite("collision_geoms_fingers",
                      &rcs::sim::SimGripperConfig::collision_geoms_fingers)
-      .def_readwrite("joint", &rcs::sim::SimGripperConfig::joint)
+      .def_readwrite("joints", &rcs::sim::SimGripperConfig::joints)
       .def_readwrite("max_joint_width",
                      &rcs::sim::SimGripperConfig::max_joint_width)
       .def_readwrite("min_joint_width",
@@ -513,6 +513,7 @@ PYBIND11_MODULE(_core, m) {
            py::arg("sim"), py::arg("cfg"))
       .def("get_config", &rcs::sim::SimGripper::get_config)
       .def("get_state", &rcs::sim::SimGripper::get_state)
+      .def("clear_collision_flag", &rcs::sim::SimGripper::clear_collision_flag)
       .def("set_config", &rcs::sim::SimGripper::set_config, py::arg("cfg"));
   py::class_<rcs::sim::SimRobot, rcs::common::Robot,
              std::shared_ptr<rcs::sim::SimRobot>>(sim, "SimRobot")
@@ -525,6 +526,7 @@ PYBIND11_MODULE(_core, m) {
       .def("set_config", &rcs::sim::SimRobot::set_config, py::arg("cfg"))
       .def("set_joints_hard", &rcs::sim::SimRobot::set_joints_hard,
            py::arg("q"))
+      .def("clear_collision_flag", &rcs::sim::SimRobot::clear_collision_flag)
       .def("get_state", &rcs::sim::SimRobot::get_state);
 
   // SimTilburgHandState
