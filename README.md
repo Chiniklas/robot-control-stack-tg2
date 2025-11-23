@@ -33,14 +33,14 @@ To install an extension:
 pip install -ve extensions/rcs_fr3
 ```
 
-For a full list of extensions and detailed documentation, visit [robot-control-stack.org/extensions](https://robot-control-stack.org/extensions).
+For a full list of extensions and detailed documentation, visit [robotcontrolstack.org/extensions](https://robotcontrolstack.org/extensions).
 
 ## Documentation
 
 
 For full documentation, including installation, usage, and API reference, please visit:
 
-**[robot-control-stack.org](https://robot-control-stack.org)**
+**[robotcontrolstack.org](https://robotcontrolstack.org)**
 
 ## Citation
 
