@@ -12,18 +12,17 @@ We build and test RCS on the latest Debian and on the latest Ubuntu LTS.
     sudo apt install $(cat debian_deps.txt)
     ```
 
-2.  Create, activate and configure a [Python virtual environment](https://docs.python.org/3/library/venv.html):
+2.  Create and activate Python virtual environment or conda environment:
 
     ```shell
-    python3 -m venv .venv
-    source .venv/bin/activate
+    conda create -n rcs python=3.11
+    conda activate rcs
     ```
 
 3.  Install the package dependencies:
 
     ```shell
-    pip install -r requirements_dev.txt
-    pip config --site set global.no-build-isolation false
+    pip install -r requirements.txt
     ```
 
 ### Building RCS
@@ -31,7 +30,7 @@ We build and test RCS on the latest Debian and on the latest Ubuntu LTS.
 Build and install RCS in editable mode:
 
 ```shell
-pip install -ve .
+pip install -ve . --no-build-isolation
 ```
 
 For a docker deployment, see the `docker` folder in the repository.
