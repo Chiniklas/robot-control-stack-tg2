@@ -3,6 +3,7 @@
 import os
 import site
 from dataclasses import dataclass
+from pathlib import Path
 
 from gymnasium import register
 from rcs._core import __version__, common
@@ -33,6 +34,9 @@ class Scene:
 def get_scene_urdf(scene_name: str) -> str | None:
     urdf_path = os.path.join(site.getsitepackages()[0], "rcs", "scenes", scene_name, "robot.urdf")
     return urdf_path if os.path.exists(urdf_path) else None
+
+
+_REPO_SCENES_ROOT = Path(__file__).resolve().parents[2] / "assets" / "scenes"
 
 
 # available mujoco scenes
@@ -77,6 +81,15 @@ scenes: dict[str, Scene] = {
         mjcf_robot=os.path.join(site.getsitepackages()[0], "rcs", "scenes", "so101_empty_world", "robot.xml"),
         urdf=os.path.join(site.getsitepackages()[0], "rcs", "scenes", "so101_empty_world", "robot.urdf"),
         robot_type=common.RobotType.SO101,
+    ),
+    "tg2_empty_world": Scene(
+        mjb=str(_REPO_SCENES_ROOT / "tg2_empty_world" / "scene.mjb"),
+        mjcf_scene=str(_REPO_SCENES_ROOT / "tg2_empty_world" / "scene.xml"),
+        mjcf_robot=str(_REPO_SCENES_ROOT / "tg2_empty_world" / "robot.xml"),
+        urdf=str(_REPO_SCENES_ROOT / "tg2_empty_world" / "robot.urdf")
+        if (_REPO_SCENES_ROOT / "tg2_empty_world" / "robot.urdf").exists()
+        else None,
+        robot_type=getattr(common.RobotType, "UNKNOWN", common.RobotType.FR3),
     ),
 }
 

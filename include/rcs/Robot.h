@@ -18,7 +18,7 @@ struct RobotMetaConfig {
   Eigen::Matrix<double, 2, Eigen::Dynamic, Eigen::ColMajor> joint_limits;
 };
 
-enum RobotType { FR3 = 0, UR5e, SO101, XArm7, Panda };
+enum RobotType { FR3 = 0, UR5e, SO101, XArm7, Panda, HumanoidTG2 };
 enum RobotPlatform { SIMULATION = 0, HARDWARE };
 
 static const std::unordered_map<RobotType, RobotMetaConfig> robots_meta_config =
@@ -97,7 +97,7 @@ static const std::unordered_map<RobotType, RobotMetaConfig> robots_meta_config =
        RobotMetaConfig{
            // q_home (5‐vector):
           //  (VectorXd(5) << -9.40612320177057, -99.66130397967824,
-          //   99.9124726477024, 69.96996996996998, -9.095744680851055)
+           //   99.9124726477024, 69.96996996996998, -9.095744680851055)
           //      .finished(),
                      (VectorXd(5) << -0.01914898, -1.90521916, 1.56476701, 1.04783839, -1.40323926)
                .finished(),
@@ -113,6 +113,24 @@ static const std::unordered_map<RobotType, RobotMetaConfig> robots_meta_config =
             // high 5‐tuple
             1.9198621771937616, 1.9198621771937634, 1.5707963267948966,
             1.6580627969561903, 2.7925268969992407)
+               .finished()}},
+      // -------------- Humanoid TG2 --------------
+      {HumanoidTG2,
+       RobotMetaConfig{
+           // q_home (18-vector): neutral pose
+           (VectorXd(18) << 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+               .finished(),
+           // dof:
+           18,
+           // joint_limits (2×18) from tg2 robot.xml ranges
+           (Eigen::Matrix<double, 2, Eigen::Dynamic, Eigen::ColMajor>(2, 18) <<
+                // low 18‐tuple
+                -2.96, -1.57, -0.43, -0.43, -2.96, -0.2618, -2.96, -2.61, -2.9671, -1.3, -1.04,
+                -2.96, -3.4, -2.96, -2.61, -2.9671, -1.3, -1.04,
+                // high 18‐tuple
+                3.14, 1.57, 0.43, 0.43, 2.96, 3.4, 2.96, 0.261, 2.9671, 1.65, 0.785,
+                2.96, 0.2618, 2.96, 0.261, 2.9671, 1.65, 0.785)
                .finished()}}}};
 
 struct RobotConfig {

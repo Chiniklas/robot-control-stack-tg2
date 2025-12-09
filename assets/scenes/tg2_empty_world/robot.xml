@@ -4,13 +4,13 @@
   </default>
 
   <worldbody>
-    <body name="pelvis" pos="0 0 1.0">
+      <body name="pelvis" pos="0 0 1.0">
       <!-- Fixed base: remove free joint to anchor the pelvis -->
       <inertial pos="-0.000641 0.000723 -0.074769" mass="6.094610" fullinertia="0.020607 0.027481 0.028105 0.004335 0.000046 -0.000037" />
       <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.752941 0.752941 0.752941 1" mesh="pelvis_mujoco"/>
       <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="pelvis_mujoco"/>
       <!-- left leg -->
-      <body name="hip_roll_l_link" pos="0 0.028 -0.0857">
+      <!-- <body name="hip_roll_l_link" pos="0 0.028 -0.0857">
         <inertial pos="-0.001848 0.055849 -0.036017" quat="-0.248001 0.650774 -0.26447 0.667116" mass="0.672983" diaginertia="0.00353091 0.00296469 0.0010174"/>
         <joint name="hip_roll_l_joint" pos="0 0 0" axis="1 0 0" range="-0.79 0.79" actuatorfrcrange="-320 320"/>
         <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.752941 0.752941 0.752941 1" mesh="hip_roll_l_link"/>
@@ -45,9 +45,9 @@
             </body>
           </body>
         </body>
-      </body>
+      </body> -->
       <!-- right leg -->
-      <body name="hip_roll_r_link" pos="0 -0.028 -0.0857">
+      <!-- <body name="hip_roll_r_link" pos="0 -0.028 -0.0857">
         <inertial pos="-0.001848 -0.055849 -0.036017" quat="0.248001 0.650774 0.26447 0.667116" mass="0.672983" diaginertia="0.00353091 0.00296469 0.0010174"/>
         <joint name="hip_roll_r_joint" pos="0 0 0" axis="1 0 0" range="-0.79 0.79" actuatorfrcrange="-320 320"/>
         <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.752941 0.752941 0.752941 1" mesh="hip_roll_r_link"/>
@@ -82,7 +82,8 @@
             </body>
           </body>
         </body>
-      </body>
+      </body> -->
+      <!-- head -->
       <body name="waist_yaw_link">
         <inertial pos="-0.000568 0.00056 0.231488" quat="0.999972 -0.000556372 -0.00687121 -0.00296446" mass="22.4452" diaginertia="0.429083 0.379054 0.177094"/>
         <joint name="waist_yaw_joint" pos="0 0 0" axis="0 0 1" range="-2.96 3.14" actuatorfrcrange="-120 120"/>
@@ -106,6 +107,7 @@
             </body>
           </body>
         </body>
+        <!-- left arm -->
         <body name="shoulder_pitch_l_link" pos="0 0.14539 0.37721" quat="0.999048 0.0436192 0 0">
           <inertial pos="0.00754 0.064361 -3.7e-05" quat="0.401219 0.582335 -0.401019 0.582317" mass="1.03063" diaginertia="0.000636 0.000545537 0.000470463"/>
           <joint name="shoulder_pitch_l_joint" pos="0 0 0" axis="0 1 0" range="-2.96 2.96" actuatorfrcrange="-91 91"/>
@@ -139,8 +141,13 @@
                     <body name="wrist_roll_l_link" pos="5.0485e-05 0 -0.02">
                       <inertial pos="0.001596 0.000155 -0.018822" quat="0.497592 0.500808 0.515059 0.486114" mass="0.065684" diaginertia="7.30062e-05 6.40263e-05 3.29676e-05"/>
                       <joint name="wrist_roll_l_joint" pos="0 0 0" axis="1 0 0" range="-1.04 0.785" actuatorfrcrange="-9 9"/>
-                      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.752941 0.752941 0.752941 1" mesh="wrist_roll_l_link"/>
-                      <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="wrist_roll_l_link"/>
+                <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.752941 0.752941 0.752941 1" mesh="wrist_roll_l_link"/>
+                <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="wrist_roll_l_link"/>
+                <site name="attachment_site_0" pos="0 0 0" size="0.01" rgba="1 0 0 1" />
+                <!-- Visible TCP frame axes -->
+                <geom name="tcp_frame_x" type="capsule" fromto="0 0 0 0.1 0 0" size="0.01" rgba="1 0 0 1" contype="0" conaffinity="0"/>
+                <geom name="tcp_frame_y" type="capsule" fromto="0 0 0 0 0.1 0" size="0.01" rgba="0 1 0 1" contype="0" conaffinity="0"/>
+                <geom name="tcp_frame_z" type="capsule" fromto="0 0 0 0 0 0.1" size="0.01" rgba="0 0 1 1" contype="0" conaffinity="0"/>
                     </body>
                   </body>
                 </body>
@@ -148,6 +155,7 @@
             </body>
           </body>
         </body>
+        <!-- right arm -->
         <body name="shoulder_pitch_r_link" pos="0 -0.14539 0.37721" quat="0.999048 -0.0436192 0 0">
           <inertial pos="0.00754 -0.064361 -3.7e-05" quat="0.582335 0.401219 -0.582317 0.401019" mass="1.03063" diaginertia="0.000636 0.000545537 0.000470463"/>
           <joint name="shoulder_pitch_r_joint" pos="0 0 0" axis="0 1 0" range="-2.96 2.96" actuatorfrcrange="-91 91"/>
@@ -197,36 +205,36 @@
   <actuator>
     <!-- Leg actuators (commented out to keep legs fixed by default) -->
     <!--
-    <position name="hip_roll_l"    joint="hip_roll_l_joint"      kp="1000"/>
-    <position name="hip_pitch_l"   joint="hip_pitch_l_joint"     kp="1000"/>
-    <position name="hip_yaw_l"     joint="hip_yaw_l_joint"       kp="1000"/>
-    <position name="knee_pitch_l"  joint="knee_pitch_l_joint"    kp="1000"/>
-    <position name="ankle_pitch_l" joint="ankle_pitch_l_joint"   kp="1000"/>
-    <position name="ankle_roll_l"  joint="ankle_roll_l_joint"    kp="1000"/>
-    <position name="hip_roll_r"    joint="hip_roll_r_joint"      kp="1000"/>
-    <position name="hip_pitch_r"   joint="hip_pitch_r_joint"     kp="1000"/>
-    <position name="hip_yaw_r"     joint="hip_yaw_r_joint"       kp="1000"/>
-    <position name="knee_pitch_r"  joint="knee_pitch_r_joint"    kp="1000"/>
-    <position name="ankle_pitch_r" joint="ankle_pitch_r_joint"   kp="1000"/>
-    <position name="ankle_roll_r"  joint="ankle_roll_r_joint"    kp="1000"/>
+    <position name="hip_roll_l"    joint="hip_roll_l_joint"      kp="4500" kv="500"/>
+    <position name="hip_pitch_l"   joint="hip_pitch_l_joint"     kp="4500" kv="500"/>
+    <position name="hip_yaw_l"     joint="hip_yaw_l_joint"       kp="4500" kv="500"/>
+    <position name="knee_pitch_l"  joint="knee_pitch_l_joint"    kp="4500" kv="500"/>
+    <position name="ankle_pitch_l" joint="ankle_pitch_l_joint"   kp="4500" kv="500"/>
+    <position name="ankle_roll_l"  joint="ankle_roll_l_joint"    kp="4500" kv="500"/>
+    <position name="hip_roll_r"    joint="hip_roll_r_joint"      kp="4500" kv="500"/>
+    <position name="hip_pitch_r"   joint="hip_pitch_r_joint"     kp="4500" kv="500"/>
+    <position name="hip_yaw_r"     joint="hip_yaw_r_joint"       kp="4500" kv="500"/>
+    <position name="knee_pitch_r"  joint="knee_pitch_r_joint"    kp="4500" kv="500"/>
+    <position name="ankle_pitch_r" joint="ankle_pitch_r_joint"   kp="4500" kv="500"/>
+    <position name="ankle_roll_r"  joint="ankle_roll_r_joint"    kp="4500" kv="500"/>
     -->
-    <position name="waist_yaw"         joint="waist_yaw_joint"       kp="1000"  />
-    <position name="head_yaw"          joint="head_yaw_joint"        kp="1000"  />
-    <position name="head_pitch"        joint="head_pitch_joint"      kp="1000"  />
-    <position name="head_roll"         joint="head_roll_joint"       kp="1000"  />
-    <position name="shoulder_pitch_l"  joint="shoulder_pitch_l_joint" kp="1000"  />
-    <position name="shoulder_roll_l"   joint="shoulder_roll_l_joint"  kp="1000"  />
-    <position name="shoulder_yaw_l"    joint="shoulder_yaw_l_joint"   kp="1000"  />
-    <position name="elbow_pitch_l"     joint="elbow_pitch_l_joint"    kp="1000"  />
-    <position name="elbow_yaw_l"       joint="elbow_yaw_l_joint"      kp="1000"  />
-    <position name="wrist_pitch_l"     joint="wrist_pitch_l_joint"    kp="1000"  />
-    <position name="wrist_roll_l"      joint="wrist_roll_l_joint"     kp="1000"  />
-    <position name="shoulder_pitch_r"  joint="shoulder_pitch_r_joint" kp="1000"  />
-    <position name="shoulder_roll_r"   joint="shoulder_roll_r_joint"  kp="1000"  />
-    <position name="shoulder_yaw_r"    joint="shoulder_yaw_r_joint"   kp="1000"  />
-    <position name="elbow_pitch_r"     joint="elbow_pitch_r_joint"    kp="1000"  />
-    <position name="elbow_yaw_r"       joint="elbow_yaw_r_joint"      kp="1000"  />
-    <position name="wrist_pitch_r"     joint="wrist_pitch_r_joint"    kp="1000"  />
-    <position name="wrist_roll_r"      joint="wrist_roll_r_joint"     kp="1000"  />
+    <position name="waist_yaw"         joint="waist_yaw_joint"        kp="4500" kv="500"/>
+    <position name="head_yaw"          joint="head_yaw_joint"         kp="4500" kv="500"/>
+    <position name="head_pitch"        joint="head_pitch_joint"       kp="4500" kv="500"/>
+    <position name="head_roll"         joint="head_roll_joint"        kp="4500" kv="500"/>
+    <position name="shoulder_pitch_l"  joint="shoulder_pitch_l_joint" kp="4500" kv="500"/>
+    <position name="shoulder_roll_l"   joint="shoulder_roll_l_joint"  kp="4500" kv="500"/>
+    <position name="shoulder_yaw_l"    joint="shoulder_yaw_l_joint"   kp="4500" kv="500"/>
+    <position name="elbow_pitch_l"     joint="elbow_pitch_l_joint"    kp="4500" kv="500"/>
+    <position name="elbow_yaw_l"       joint="elbow_yaw_l_joint"      kp="4500" kv="500"/>
+    <position name="wrist_pitch_l"     joint="wrist_pitch_l_joint"    kp="4500" kv="500"/>
+    <position name="wrist_roll_l"      joint="wrist_roll_l_joint"     kp="4500" kv="500"/>
+    <position name="shoulder_pitch_r"  joint="shoulder_pitch_r_joint" kp="4500" kv="500"/>
+    <position name="shoulder_roll_r"   joint="shoulder_roll_r_joint"  kp="4500" kv="500"/>
+    <position name="shoulder_yaw_r"    joint="shoulder_yaw_r_joint"   kp="4500" kv="500"/>
+    <position name="elbow_pitch_r"     joint="elbow_pitch_r_joint"    kp="4500" kv="500"/>
+    <position name="elbow_yaw_r"       joint="elbow_yaw_r_joint"      kp="4500" kv="500"/>
+    <position name="wrist_pitch_r"     joint="wrist_pitch_r_joint"    kp="4500" kv="500"/>
+    <position name="wrist_roll_r"      joint="wrist_roll_r_joint"     kp="4500" kv="500"/>
   </actuator>
 </mujoco>

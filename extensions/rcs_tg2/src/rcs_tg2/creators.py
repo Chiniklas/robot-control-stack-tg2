@@ -12,17 +12,23 @@ from rcs.envs.base import (
     RelativeTo,
     RobotEnv,
 )
-from rcs.envs.creators import RCSHardwareEnvCreator
+from rcs.envs.creators import RCSHardwareEnvCreator, SimEnvCreator
 from rcs_tg2._core import hw
 from rcs_tg2.envs import TG2HW
-from rcs_tg2.utils import default_tg2_hw_gripper_cfg, default_tg2_hw_robot_cfg
+from rcs_tg2.utils import (
+    default_tg2_hw_gripper_cfg,
+    default_tg2_hw_robot_cfg,
+    default_tg2_mujoco_cameraset_cfg,
+    default_tg2_sim_gripper_cfg,
+    default_tg2_sim_robot_cfg,
+)
 
 import rcs
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-
+# ============================================ hardware environment creators (not implemented yet) ============================================
 class RCSTG2EnvCreator(RCSHardwareEnvCreator):
     def __call__(  # type: ignore
         self,
@@ -138,4 +144,32 @@ class RCSTG2DefaultEnvCreator(RCSHardwareEnvCreator):
             gripper_cfg=default_tg2_hw_gripper_cfg() if gripper else None,
             max_relative_movement=(0.2, np.deg2rad(45)) if delta_actions else None,
             relative_to=RelativeTo.LAST_STEP,
+        )
+
+# ============================================ simulation environment creators ============================================
+class RCSTG2SimEnvCreator(RCSHardwareEnvCreator):
+    def __call__(  # type: ignore
+        self,
+        control_mode: ControlMode = ControlMode.CARTESIAN_TRPY,
+        robot_cfg: rcs.sim.SimRobotConfig | None = None,
+        gripper_cfg: rcs.sim.SimGripperConfig | None = None,
+        cameras: dict | None = None,
+        max_relative_movement: float | tuple[float, float] | None = (0.2, np.deg2rad(45)),
+        relative_to: RelativeTo = RelativeTo.LAST_STEP,
+        scene: str = "tg2_empty_world",
+    ) -> gym.Env:
+        """
+        Creates a simulation environment for TG2 using the standard SimEnvCreator with TG2 defaults.
+        """
+        robot_cfg = robot_cfg or default_tg2_sim_robot_cfg(scene=scene)
+        gripper_cfg = gripper_cfg if gripper_cfg is not None else default_tg2_sim_gripper_cfg()
+        cameras = default_tg2_mujoco_cameraset_cfg(scene=scene) if cameras is None else cameras
+
+        return SimEnvCreator()(
+            control_mode=control_mode,
+            robot_cfg=robot_cfg,
+            gripper_cfg=gripper_cfg,
+            cameras=cameras,
+            max_relative_movement=max_relative_movement,
+            relative_to=relative_to,
         )

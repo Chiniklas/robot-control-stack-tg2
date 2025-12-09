@@ -8,7 +8,8 @@ Simple script for opening a webcam using OpenCV and displaying the video feed.
 def open_webcam():
     # Open the default webcam (0).
     # If you have multiple cameras, you can try 1, 2, etc.
-    cap = cv2.VideoCapture("/dev/video8")
+    # cap = cv2.VideoCapture("/dev/video8")
+    cap = cv2.VideoCapture("/dev/video2")
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
     cap.set(cv2.CAP_PROP_FPS, 30)
