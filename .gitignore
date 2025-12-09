@@ -20,3 +20,4 @@ settings.json
 video*
 GEMINI.md
 docs/_build
+assets/scenes/tg2_empty_world/assets/*.STL
